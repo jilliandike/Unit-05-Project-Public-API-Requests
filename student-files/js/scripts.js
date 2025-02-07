@@ -2,9 +2,7 @@ let people = [];
 const gallery = document.querySelector('.gallery');
 const modalContent = document.querySelector('.modal');
 
-
-
-//Credit for function formatting in this file to TeamTreehouse lessons:
+//Credit for function formatting in this file goes to TeamTreehouse lessons:
 //Practice Fetch API and Practice DOM Manipulation: Modal
 
 //FETCH DATA
@@ -15,7 +13,6 @@ async function getPeople() {
       'https://randomuser.me/api/?results=12&inc=picture,name,email,location,phone,dob'
     );
     people = await response.json();
-    console.log(people); //remove upon polish
     displayPeople(people.results);
     return people;
   }
@@ -47,16 +44,14 @@ getPeople();
 
 //DISPLAY MODAL
 
-//Opens the modal when a person is clicked - LOGS THE CLICKED PERSON; HOW TO HANDLE MULTIPLE NAMES
+//Opens the modal when a person is clicked
 gallery.addEventListener('click', (event) => {
     const personCard = event.target.closest('.card');
-
     if(!personCard) return;
 
-    const clickedPerson = personCard.querySelector("#name").textContent.split(' ');
-    console.log(clickedPerson); //remove upon final polish
+    const clickedPerson = personCard.querySelector(".card-text").textContent;
     const person = people.results.find(
-        (person) => person.name.first === clickedPerson[0] && person.name.last === clickedPerson[1]
+        (person) => person.email === clickedPerson
     );
     displayPersonModal(person);
 });
@@ -72,7 +67,7 @@ function displayPersonModal(person){
             <div class="modal">
                 <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
                 <div class="modal-info-container">
-                    <img class="modal-img" src=${person.picture.thumbnail} alt="profile picture">
+                    <img class="modal-img" src=${person.picture.large} alt="profile picture">
                     <h3 id="name" class="modal-name cap">${person.name.first} ${person.name.last}</h3>
                     <p class="modal-text">${person.email}</p>
                     <p class="modal-text cap">${person.location.city}</p>
@@ -84,12 +79,12 @@ function displayPersonModal(person){
         </div>
     `;
     gallery.insertAdjacentHTML('beforeend', personModalHTML);
+
+    const modalContainer = document.querySelector('.modal-container');
+    const closeBtn = document.getElementById('modal-close-btn');
+
+    //Closes the modal when the close button is clicked
+    closeBtn.addEventListener('click', (event) => {
+        modalContainer.remove()
+    })
 }
-
-const modalContainer = document.querySelector('.modal-container');
-const closeBtn = document.getElementById('modal-close-btn');
-
-// Closes the modal when user clicks the close button - GIVES AN ERROR AND I DON'T KNOW WHY
-closeBtn.addEventListener('click', (event) => {
-    modalContainer.remove()
-})
