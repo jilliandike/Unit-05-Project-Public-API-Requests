@@ -1,8 +1,7 @@
 let people = [];
 const gallery = document.querySelector('.gallery');
 const modalContent = document.querySelector('.modal');
-const modalContainer = document.querySelector('.modal-container');
-const closeBtn = document.querySelector('.modal-close-btn');
+
 
 
 //Credit for function formatting in this file to TeamTreehouse lessons:
@@ -48,22 +47,26 @@ getPeople();
 
 //DISPLAY MODAL
 
-//Opens the modal when a person is clicked LOGS THE CLICKED PERSON
+//Opens the modal when a person is clicked - LOGS THE CLICKED PERSON; HOW TO HANDLE MULTIPLE NAMES
 gallery.addEventListener('click', (event) => {
     const personCard = event.target.closest('.card');
 
     if(!personCard) return;
 
     const clickedPerson = personCard.querySelector("#name").textContent.split(' ');
-    console.log(clickedPerson); //remove upon polish
+    console.log(clickedPerson); //remove upon final polish
     const person = people.results.find(
-        (person) => person.name.first && person.name.last === clickedPerson
+        (person) => person.name.first === clickedPerson[0] && person.name.last === clickedPerson[1]
     );
     displayPersonModal(person);
 });
 
-//Adds the person's information to the modal NOT WORKING - ERROR IN THE INTERPOLATION
+//Adds the person's information to the modal
 function displayPersonModal(person){
+    let birthday = new Date(person.dob.date);
+    let year = birthday.getFullYear();
+    let month = birthday.getMonth() + 1;
+    let day = birthday.getDate();
     let personModalHTML = `
         <div class="modal-container">
             <div class="modal">
@@ -76,10 +79,17 @@ function displayPersonModal(person){
                     <hr>
                     <p class="modal-text">${person.phone}</p>
                     <p class="modal-text">${person.location.street.number} ${person.location.street.name}, ${person.location.city}, ${person.location.state} ${person.location.postcode}</p>
-                    <p class="modal-text">Birthday: ${person.dob.date}</p>
+                    <p class="modal-text">Birthday: ${month}/${day}/${year}</p>
             </div>
         </div>
     `;
-    // modalContainer.innerHTML = personModalHTML; 
     gallery.insertAdjacentHTML('beforeend', personModalHTML);
 }
+
+const modalContainer = document.querySelector('.modal-container');
+const closeBtn = document.getElementById('modal-close-btn');
+
+// Closes the modal when user clicks the close button - GIVES AN ERROR AND I DON'T KNOW WHY
+closeBtn.addEventListener('click', (event) => {
+    modalContainer.remove()
+})
